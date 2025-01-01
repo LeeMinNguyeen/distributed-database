@@ -87,105 +87,52 @@ class VerticalFragmentation:
         
         return np.matrix(usage), attribute_columns
     
-class ClusteringAlg(VerticalFragmentation):
-    def __init__(self, attributes, queries):
-        super().__init__(attributes, queries)
-    
-    def bond(self, attribute1, attribute2):
-        """
-        Bond between two attributes
-        """
-        result = 0
-        for row in range(self.affinity_matrix.shape[0]):
-            try:
-                a1 = list(self.columns_pos.keys())[list(self.columns_pos.values()).index(attribute1)]
-            except ValueError:
-                continue
-            try:
-                a2 = list(self.columns_pos.keys())[list(self.columns_pos.values()).index(attribute2)]
-            except ValueError:
-                continue
-            result += self.affinity_matrix[row, a1] * self.affinity_matrix[row, a2]
-        
-        return result
-    
-    def cont(self, attribute1, attribute2, attribute3):
-        """
-        Contribution to Global Affinity Measure - AM
-        """
-        print(attribute1, attribute2, attribute3)
-        return (2*self.bond(attribute1, attribute2) + 2*self.bond(attribute2, attribute3) - 2*self.bond(attribute1, attribute3))
-    
     def BEA(self):
         """
         Bond Energy Algorithm   
         """
-        CA = np.zeros((self.affinity_matrix.shape[0], self.affinity_matrix.shape[1])) # Create a matrix with the size of attributes x attributes
-        
-        # Copy the first two columns of the affinity matrix to the CA matrix
-        CA[:, 0] = self.affinity_matrix[:, 0].reshape(-1)
-        CA[:, 1] = self.affinity_matrix[:, 1].reshape(-1)
+        CA = self.affinity_matrix[:, :2] # Create a matrix with the first two columns of the affinity matrix
+
+        # Add zeros columns at the beginning and end of the CA matrix
+        CA = np.append(np.zeros((4,1)), CA, axis=1)
+        CA = np.append(CA,np.zeros((4,1)), axis=1)
         
         index = 2 # Start from the third column
 
-        while index <= self.affinity_matrix.shape[1]: # Iterate through the columns
+        while index < len(self.affinity_matrix): # Iterate through the columns
             
-            cont_score = {} # Create a dictionary to store the contribution score
+            cont_score = [] # Create a list to store the contribution score
             
-            '''
-            BUG: nó lấy toàn bộ attribute của AA thay vì là các Attributes đang có CA
-            eg:
-            While lần đầu CA có 2 cột: PNO và PNAME -> chèn vào BUDGET
-            Lặp while lần đầu tính:
-                cont(0 BUDGET PNO)
-                cont(PNO BUDGET PNAME)
-                cont(PNAME BUDGET LOC)
-            thay vì là:
-                cont(0 BUDGET PNO)
-                cont(PNO BUDGET PNAME)
-                cont(PNAME BUDGET 0) -> LOC lúc này ko tồn tại trong CA
-            '''
+            j = 0
             
-            for i in range(index): # Iterate through the columns of the CA matrix
-                try:
-                    cont = self.cont(self.columns_pos[i - 1], self.columns_pos[index], self.columns_pos[i]) # Calculate the contribution between the columns
-                    cont_score[i] = cont # Store the contribution score in the dictionary
-                except KeyError:
-                    try:
-                        cont = self.cont(0, self.columns_pos[index], self.columns_pos[i]) # Calculate the contribution between the columns
-                        cont_score[i] = cont # Store the contribution score in the dictionary
-                    except KeyError:
-                        cont = self.cont(0, 0, self.columns_pos[i]) # Calculate the contribution between the columns
-                        cont_score[i] = cont
-            
-            try:
-                cont = self.cont(self.columns_pos[index - 1], self.columns_pos[index], self.columns_pos[index + 1]) # Calculate the contribution between the last column and the next column
-            except KeyError:
-                try:
-                    cont = self.cont(self.columns_pos[index - 1], self.columns_pos[index], 0)
-                except KeyError:
-                    cont = self.cont(self.columns_pos[index - 1], 0, 0)
-            cont_score[i + 1] = cont
-            
-            print(cont_score)
-            
-            loc = max(cont_score, key=cont_score.get) # Get the location with the maximum contribution score
+            for i in range(1, CA.shape[1]): # Iterate through the columns of the CA matrix
+                print(j, index, i, len(CA))
+                cont = (2 * np.dot(CA[:, j:j+1].T, self.affinity_matrix[:, index:index+1]) + 
+                      2 * np.dot(self.affinity_matrix[:, index:index+1].T, CA[:, i:i+1]) - 
+                      2 * np.dot(CA[:, j:j+1].T, CA[:, i:i+1]))  
+                cont_score.append(cont) # Store the contribution score in the list
+                j = i
 
-            for j in range(index, loc, -1):
-                CA[:, j] = CA[:, j - 1] # Shift the columns to the right
+            loc = np.argmax(cont_score) + 1 # Get the index of the maximum contribution score
+
+            CA = np.insert(CA, loc, self.affinity_matrix[index:index+1], axis=1) # Insert the column with the maximum contribution score to the CA matrix
             
-            CA[:, loc] = self.affinity_matrix[:, index].reshape(-1)
             index += 1
             
             print(np.matrix(CA))
         
-        # Reorder the rows to match the relative position of the columns
-        ordered_CA = np.zeros_like(CA)
-        for i in range(CA.shape[0]):
-            ordered_CA[i, :] = CA[self.columns_pos.index(self.attributes[i]), :]
+        # Remove the first and last columns of zeros the CA matrix
+        CA = np.delete(CA, 0, axis=1)
+        CA = np.delete(CA, CA.shape[1]-1, axis=1)
         
-        return np.matrix(ordered_CA)
-        
+        return np.matrix(CA)
+    
+    def Split(self):
+        """ 
+        Split Algorithm
+        """
+        pass
+
 if __name__ == "__main__":
     
     columns = ['PNO', 'PNAME', 'BUDGET', 'LOC']
@@ -196,7 +143,7 @@ if __name__ == "__main__":
     q4_query = "SELECT SUM(BUDGET) FROM PROJ WHERE LOC = 'VALUE'"
     queries = [q1_query, q2_query, q3_query, q4_query]
     
-    proj = ClusteringAlg(columns, queries)
+    proj = VerticalFragmentation(columns, queries)
     
     print(proj.BEA())
     
