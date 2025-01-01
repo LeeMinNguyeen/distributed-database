@@ -9,6 +9,8 @@ class VerticalFragmentation:
         self.access_freq()
         self.affinity_matrix = self.attribute_affinity_matrix()
         
+        self.BEA()
+        
     def access_freq(self):
         """
         Access Frequency Matrix: application access frequency for each query
@@ -106,7 +108,6 @@ class VerticalFragmentation:
             j = 0
             
             for i in range(1, CA.shape[1]): # Iterate through the columns of the CA matrix
-                print(j, index, i, len(CA))
                 cont = (2 * np.dot(CA[:, j:j+1].T, self.affinity_matrix[:, index:index+1]) + 
                       2 * np.dot(self.affinity_matrix[:, index:index+1].T, CA[:, i:i+1]) - 
                       2 * np.dot(CA[:, j:j+1].T, CA[:, i:i+1]))  
@@ -118,14 +119,12 @@ class VerticalFragmentation:
             CA = np.insert(CA, loc, self.affinity_matrix[index:index+1], axis=1) # Insert the column with the maximum contribution score to the CA matrix
             
             index += 1
-            
-            print(np.matrix(CA))
         
         # Remove the first and last columns of zeros the CA matrix
         CA = np.delete(CA, 0, axis=1)
         CA = np.delete(CA, CA.shape[1]-1, axis=1)
         
-        return np.matrix(CA)
+        self.CA = np.matrix(CA)
     
     def Split(self):
         """ 
@@ -145,7 +144,4 @@ if __name__ == "__main__":
     
     proj = VerticalFragmentation(columns, queries)
     
-    print(proj.BEA())
-    
-    
-
+    print(proj.CA)
