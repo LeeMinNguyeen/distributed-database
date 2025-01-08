@@ -140,16 +140,80 @@ class VerticalFragmentation:
             row_idx = list(self.columns_pos.values()).index(col) # Get the index of the column
             ordered_CA[idx, :] = CA[row_idx, :]
         
-        CA = np.matrix(ordered_CA)
+        self.CA = np.matrix(ordered_CA)
         
-        return CA
+        self.CA_columns_pos = new_columns_pos
     
     def Split(self):
         """ 
         Split Algorithm - chưa làm
         """
-        pass
-
+        
+        def usage(use):
+            query = []
+            for row in use:
+                if 1 in row:    
+                    query.append(1)
+                else:
+                    query.append(0)
+            return query
+        
+        def partition_point():
+            CTQ = 0
+            CBQ = 0
+            COQ = 0
+            
+            TA_usage = self.attributes_usage_matrix(TA_columns_pos, self.queries)[0]
+            BA_usage = self.attributes_usage_matrix(BA_columns_pos, self.queries)[0]
+ 
+            TA_query = usage(TA_usage)
+            BA_query = usage(BA_usage)
+            
+            for i in range(len(TA_query)):
+                if TA_query[i] and BA_query[i]:
+                    COQ += self.acc_sum[i]
+                elif TA_query[i] and not BA_query[i]:
+                    CTQ += self.acc_sum[i]
+                else:
+                    CBQ += self.acc_sum[i]
+            
+            print(f"CTQ: {CTQ}, CBQ: {CBQ}, COQ: {COQ}\n result: {CTQ * CBQ - COQ**2}")
+            return CTQ * CBQ - COQ**2
+        
+        split_columns = self.CA_columns_pos
+        print(f"\n{split_columns}\n")
+        
+        TA_columns_pos = split_columns[:-1] # Create a list with all columns except the last column of the CA matrix
+        BA_columns_pos = split_columns[-1:] # Create a list with the last column of the CA matrix
+        
+        best = [TA_columns_pos]
+        best_score = partition_point()
+        
+        for i in range(len(split_columns)):
+            for i in range(2, len(split_columns)):
+                TA_columns_pos = split_columns[:-i] # Create a list with all columns except the last i columns of the CA matrix
+                BA_columns_pos = split_columns[-i:] # Create a list with the last i columns of the CA matrix
+                z = partition_point()
+                if z > best_score:
+                    best_score = z
+                    best = [TA_columns_pos]
+                elif z == best_score:
+                    best.append(TA_columns_pos)
+            print("----------------\n")
+            split_columns.append(split_columns.pop(0))
+            print(f"{split_columns}\n")
+        
+        # Assuming the first attribute is the key
+        key = list(self.columns_pos.values())[0]
+        for ta in best:
+            if key not in ta:
+                ta.insert(0, key)
+            else:
+                ta.remove(key)
+                ta.insert(0, key)
+        
+        self.best = best
+        
 if __name__ == "__main__":
     
     """
@@ -168,9 +232,8 @@ if __name__ == "__main__":
     queries = [q1_query, q2_query, q3_query, q4_query]
     """
     
-    
     acc = np.array([[10, 20, 0],
-                   [0, 20, 10]])
+                    [0, 20, 10]])
     
     columns = ['ENO', 'ENAME', 'PNO', 'DUR', 'RESP']
     
@@ -178,10 +241,9 @@ if __name__ == "__main__":
     q2_query = "SELECT ENO, DUR FROM ASG"
     
     queries = [q1_query, q2_query]
-    
+    # """
     
     proj = VerticalFragmentation(columns, queries, acc)
-    
     print("----------------\n")
     print("Original Attributes")
     print(proj.attributes)
@@ -195,4 +257,9 @@ if __name__ == "__main__":
     print("BAE")
     result = proj.BEA()
     print("-------- Result --------")
-    print(result)
+    print(proj.CA)
+    print("\n----------------\n")
+    print("Split")
+    proj.Split()
+    print("-------- Result --------")
+    print(proj.best)
