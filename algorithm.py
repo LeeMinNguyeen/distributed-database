@@ -1,3 +1,7 @@
+'''
+source code: https://github.com/LeeMinNguyeen/distributed-database/blob/main/algorithm.py
+'''
+
 import numpy as np
 
 class VerticalFragmentation:
