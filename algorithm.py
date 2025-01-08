@@ -242,23 +242,27 @@ if __name__ == "__main__":
         frag = VerticalFragmentation(columns, queries, acc)
 
         # USE
+        print("-------- Use --------")
+        print(list(frag.columns_pos.values()))
         use = frag.usage_matrix
+        print(use)
         
         # AA
+        print("\n-------- AA --------")
         AA = frag.AA
+        print(list(frag.columns_pos.values()))
+        print(AA)
         
         # BEA
         frag.BEA()
         BEA = frag.CA
+        print("\n-------- CA --------")
+        print(frag.CA_columns_pos)
+        print(BEA)
         
         # Split
         frag.Split()
         split = frag.best
-        
-        print("-------- BEA --------")
-        print(frag.CA_columns_pos)
-        print(BEA)
-        
         print("\n-------- Split --------")
         for frag in split:
             print(frag)
