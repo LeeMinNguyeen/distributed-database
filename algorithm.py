@@ -281,7 +281,9 @@ if __name__ == "__main__":
     split = proj.best
     
     print("-------- BEA --------")
+    print(proj.CA_columns_pos)
     print(BEA)
+    
     print("\n-------- Split --------")
     for frag in split:
         print(frag)
