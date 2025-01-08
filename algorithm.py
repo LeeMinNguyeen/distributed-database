@@ -236,11 +236,37 @@ if __name__ == "__main__":
         level=log.INFO
     )
     
+    def fragment(columns, queries, acc):
+        frag = VerticalFragmentation(columns, queries, acc)
+
+        # USE
+        use = frag.usage_matrix
+        
+        # AA
+        AA = frag.AA
+        
+        # BEA
+        frag.BEA()
+        BEA = frag.CA
+        
+        # Split
+        frag.Split()
+        split = frag.best
+        
+        print("-------- BEA --------")
+        print(frag.CA_columns_pos)
+        print(BEA)
+        
+        print("\n-------- Split --------")
+        for frag in split:
+            print(frag)
+    
+    ##################### Proj ##########################
     """
     acc = np.array([[15, 20, 10],
                     [ 5,  0,  0],
                     [25, 25, 25],
-                    [ 3,  0,  0]])
+                    [ 3,  0,  0]])    
     
     columns = ['PNO', 'PNAME', 'BUDGET', 'LOC']
     
@@ -250,13 +276,12 @@ if __name__ == "__main__":
     q4_query = "SELECT SUM(BUDGET) FROM PROJ WHERE LOC = 'VALUE'"
     
     queries = [q1_query, q2_query, q3_query, q4_query]
-    
     """
+    ##################### Quá trình ##########################
     
     acc = np.array([[10, 20, 0],
                     [0, 20, 10]])
-    
-    #Original Attributes
+
     columns = ['ENO', 'ENAME', 'PNO', 'DUR', 'RESP']
     
     q1_query = "CREATE VIEW EMPVIEW (ENO, ENAME, PNO, RESP) AS SELECT E.ENO, E.ENAME, ASG.PNO, ASG.RESP FROM EMP, ASG WHERE EMP.ENO=ASG.ENO AND DUR=24"
@@ -264,28 +289,4 @@ if __name__ == "__main__":
     
     queries = [q1_query, q2_query]
     
-    # """
-    
-    proj = VerticalFragmentation(columns, queries, acc)
-
-    # USE
-    use = proj.usage_matrix
-    
-    # AA
-    AA = proj.AA
-    
-    # BEA
-    proj.BEA()
-    BEA = proj.CA
-    
-    # Split
-    proj.Split()
-    split = proj.best
-    
-    print("-------- BEA --------")
-    print(proj.CA_columns_pos)
-    print(BEA)
-    
-    print("\n-------- Split --------")
-    for frag in split:
-        print(frag)
+    fragment(columns, queries, acc)

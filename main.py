@@ -1,23 +1,40 @@
 from database import database
-import algorithm as alg
+from algorithm import VerticalFragmentation
 import numpy as np
 
 project = database("NGUYIN\\NGUYIN", "PROJECT")
 project.connect()
 
-columns, row = project.sql("SELECT top(1) * FROM PROJ", type = "table")
-print(columns)
+def fragment(columns, queries, acc):
+    frag = VerticalFragmentation(columns, queries, acc)
+    
+    # BEA
+    frag.BEA()
+    BEA = frag.CA
+        
+    # Split
+    frag.Split()
+    split = frag.best
+        
+    print("-------- BEA --------")
+    print(frag.CA_columns_pos)
+    print(BEA)
+        
+    print("\n-------- Split --------")
+    for frag in split:
+        print(frag)
 
-q1_query = "SELECT BUDGET FROM PROJ WHERE PNO = 'VALUE'"
-q2_query = "SELECT PNAME,BUDGET FROM PROJ"
-q3_query = "SELECT PNAME FROM PROJ WHERE LOC = 'VALUE'"
-q4_query = "SELECT SUM(BUDGET) FROM PROJ WHERE LOC = 'VALUE'"
+acc = np.array([[10, 20, 0],
+                [0, 20, 10]])
 
-q1 = project.sql(q1_query, type = "array")
-q2 = project.sql(q2_query, type = "array")
-q3 = project.sql(q3_query, type = "array")
-q4 = project.sql(q4_query, type = "array")
-
+columns = ['ENO', 'ENAME', 'PNO', 'DUR', 'RESP']
+    
+q1_query = "CREATE VIEW EMPVIEW (ENO, ENAME, PNO, RESP) AS SELECT E.ENO, E.ENAME, ASG.PNO, ASG.RESP FROM EMP, ASG WHERE EMP.ENO=ASG.ENO AND DUR=24"
+q2_query = "SELECT ENO, DUR FROM ASG"
+    
+queries = [q1_query, q2_query]
+    
+fragment(columns, queries, acc)
 
 project.close()
 
