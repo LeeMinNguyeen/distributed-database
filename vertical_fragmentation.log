@@ -41,55 +41,97 @@ SPLIT
 
 ['RESP', 'PNO', 'DUR', 'ENO', 'ENAME']
 
+TA: ['RESP', 'PNO', 'DUR', 'ENO']
+BA: ['ENAME']
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
+
+TA: ['RESP', 'PNO', 'DUR']
+BA: ['ENO', 'ENAME']
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
+
+TA: ['RESP', 'PNO']
+BA: ['DUR', 'ENO', 'ENAME']
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
+
+TA: ['RESP']
+BA: ['PNO', 'DUR', 'ENO', 'ENAME']
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 ----------------
 
 ['PNO', 'DUR', 'ENO', 'ENAME', 'RESP']
 
+TA: ['PNO', 'DUR', 'ENO']
+BA: ['ENAME', 'RESP']
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
+
+TA: ['PNO', 'DUR']
+BA: ['ENO', 'ENAME', 'RESP']
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
+
+TA: ['PNO']
+BA: ['DUR', 'ENO', 'ENAME', 'RESP']
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 ----------------
 
 ['DUR', 'ENO', 'ENAME', 'RESP', 'PNO']
 
+TA: ['DUR', 'ENO', 'ENAME']
+BA: ['RESP', 'PNO']
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
+
+TA: ['DUR', 'ENO']
+BA: ['ENAME', 'RESP', 'PNO']
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
+
+TA: ['DUR']
+BA: ['ENO', 'ENAME', 'RESP', 'PNO']
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 ----------------
 
 ['ENO', 'ENAME', 'RESP', 'PNO', 'DUR']
 
+TA: ['ENO', 'ENAME', 'RESP']
+BA: ['PNO', 'DUR']
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
+
+TA: ['ENO', 'ENAME']
+BA: ['RESP', 'PNO', 'DUR']
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
+
+TA: ['ENO']
+BA: ['ENAME', 'RESP', 'PNO', 'DUR']
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 ----------------
 
 ['ENAME', 'RESP', 'PNO', 'DUR', 'ENO']
 
+TA: ['ENAME', 'RESP', 'PNO']
+BA: ['DUR', 'ENO']
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
+
+TA: ['ENAME', 'RESP']
+BA: ['PNO', 'DUR', 'ENO']
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
+
+TA: ['ENAME']
+BA: ['RESP', 'PNO', 'DUR', 'ENO']
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 ----------------
 
 ['RESP', 'PNO', 'DUR', 'ENO', 'ENAME']
-

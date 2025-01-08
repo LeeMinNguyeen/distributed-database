@@ -175,6 +175,8 @@ class VerticalFragmentation:
             CBQ = 0
             COQ = 0
             
+            log.info(f"\nTA: {TA_columns_pos}\nBA: {BA_columns_pos}")
+            
             TA_usage = self.attributes_usage_matrix(TA_columns_pos, self.queries)[0]
             BA_usage = self.attributes_usage_matrix(BA_columns_pos, self.queries)[0]
  
@@ -193,7 +195,7 @@ class VerticalFragmentation:
             return CTQ * CBQ - COQ**2
         
         split_columns = self.CA_columns_pos
-        log.info(f"\n{split_columns}\n")
+        log.info(f"\n{split_columns}")
         
         TA_columns_pos = split_columns[:-1] # Create a list with all columns except the last column of the CA matrix
         BA_columns_pos = split_columns[-1:] # Create a list with the last column of the CA matrix
@@ -213,7 +215,7 @@ class VerticalFragmentation:
                     best.append(TA_columns_pos) # Save all TA of the highest score
             log.info("----------------\n")
             split_columns.append(split_columns.pop(0))
-            log.info(f"{split_columns}\n")
+            log.info(f"{split_columns}")
         
         # Assuming the first attribute is the key
         key = list(self.columns_pos.values())[0]
