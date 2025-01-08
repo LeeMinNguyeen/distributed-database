@@ -43,21 +43,33 @@ SPLIT
 
 TA: ['RESP', 'PNO', 'DUR', 'ENO']
 BA: ['ENAME']
+
+TA: [1, 1]
+BA: [1, 0]
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
 
 TA: ['RESP', 'PNO', 'DUR']
 BA: ['ENO', 'ENAME']
+
+TA: [1, 1]
+BA: [1, 1]
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 
 TA: ['RESP', 'PNO']
 BA: ['DUR', 'ENO', 'ENAME']
+
+TA: [1, 0]
+BA: [1, 1]
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 
 TA: ['RESP']
 BA: ['PNO', 'DUR', 'ENO', 'ENAME']
+
+TA: [1, 0]
+BA: [1, 1]
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 ----------------
@@ -66,16 +78,25 @@ CTQ: 0, CBQ: 30, COQ: 30
 
 TA: ['PNO', 'DUR', 'ENO']
 BA: ['ENAME', 'RESP']
+
+TA: [1, 1]
+BA: [1, 0]
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
 
 TA: ['PNO', 'DUR']
 BA: ['ENO', 'ENAME', 'RESP']
+
+TA: [1, 1]
+BA: [1, 1]
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 
 TA: ['PNO']
 BA: ['DUR', 'ENO', 'ENAME', 'RESP']
+
+TA: [1, 0]
+BA: [1, 1]
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 ----------------
@@ -84,16 +105,25 @@ CTQ: 0, CBQ: 30, COQ: 30
 
 TA: ['DUR', 'ENO', 'ENAME']
 BA: ['RESP', 'PNO']
+
+TA: [1, 1]
+BA: [1, 0]
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
 
 TA: ['DUR', 'ENO']
 BA: ['ENAME', 'RESP', 'PNO']
+
+TA: [1, 1]
+BA: [1, 0]
 CTQ: 30, CBQ: 0, COQ: 30
  result: -900
 
 TA: ['DUR']
 BA: ['ENO', 'ENAME', 'RESP', 'PNO']
+
+TA: [1, 1]
+BA: [1, 1]
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 ----------------
@@ -102,16 +132,25 @@ CTQ: 0, CBQ: 0, COQ: 60
 
 TA: ['ENO', 'ENAME', 'RESP']
 BA: ['PNO', 'DUR']
+
+TA: [1, 1]
+BA: [1, 1]
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 
 TA: ['ENO', 'ENAME']
 BA: ['RESP', 'PNO', 'DUR']
+
+TA: [1, 1]
+BA: [1, 1]
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 
 TA: ['ENO']
 BA: ['ENAME', 'RESP', 'PNO', 'DUR']
+
+TA: [1, 1]
+BA: [1, 1]
 CTQ: 0, CBQ: 0, COQ: 60
  result: -3600
 ----------------
@@ -120,16 +159,25 @@ CTQ: 0, CBQ: 0, COQ: 60
 
 TA: ['ENAME', 'RESP', 'PNO']
 BA: ['DUR', 'ENO']
+
+TA: [1, 0]
+BA: [1, 1]
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 
 TA: ['ENAME', 'RESP']
 BA: ['PNO', 'DUR', 'ENO']
+
+TA: [1, 0]
+BA: [1, 1]
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 
 TA: ['ENAME']
 BA: ['RESP', 'PNO', 'DUR', 'ENO']
+
+TA: [1, 0]
+BA: [1, 1]
 CTQ: 0, CBQ: 30, COQ: 30
  result: -900
 ----------------

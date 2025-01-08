@@ -183,6 +183,8 @@ class VerticalFragmentation:
             TA_query = usage(TA_usage)
             BA_query = usage(BA_usage)
             
+            log.info(f"\nTA: {TA_query}\nBA: {BA_query}")
+            
             for i in range(len(TA_query)):
                 if TA_query[i] and BA_query[i]:
                     COQ += self.acc_sum[i]
