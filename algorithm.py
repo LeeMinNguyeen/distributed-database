@@ -1,8 +1,10 @@
 '''
 source code: https://github.com/LeeMinNguyeen/distributed-database/blob/main/algorithm.py
+log file: https://github.com/LeeMinNguyeen/distributed-database/blob/main/vertical_fragmentation.log
 '''
 
 import numpy as np
+import logging as log
 
 class VerticalFragmentation:
     def __init__(self, attributes, queries, acc):
@@ -94,16 +96,19 @@ class VerticalFragmentation:
         """
         Bond Energy Algorithm   
         """
+        log.info("----------------")
+        log.info(f"BEA")
+        log.info("----------------")
         CA = self.AA[:, :2] # Create a matrix with the first two columns of the affinity matrix
         
         new_columns_pos = [self.columns_pos[k] for k in list(self.columns_pos)[:2]]
-        print(new_columns_pos)
+        log.info(new_columns_pos)
         
         # Add zeros columns at the beginning and end of the CA matrix
         CA = np.append(np.zeros((self.AA.shape[0],1)), CA, axis=1)
         CA = np.append(CA,np.zeros((self.AA.shape[0],1)), axis=1)
         
-        print(CA)
+        log.info(CA)
         
         index = 2 # Start from the third column
 
@@ -121,16 +126,16 @@ class VerticalFragmentation:
                 j = i
                 
             loc = np.argmax(cont_score) + 1 # Get the index of the maximum contribution score
-            print(f"\nCont score: {[score.item() for score in cont_score]}")
-            print(f"Best pos: {loc - 1}")
+            log.info(f"\nCont score: {[score.item() for score in cont_score]}")
+            log.info(f"Best pos: {loc - 1}")
             
             temp = {loc: self.columns_pos[index]}
             new_columns_pos.insert(loc - 1, temp[loc])
-            print(new_columns_pos)
+            log.info(new_columns_pos)
             
             CA = np.insert(CA, loc, self.AA[index:index+1], axis=1) # Insert the column with the maximum contribution score to the CA matrix
             
-            print(CA)
+            log.info(CA)
             
             index += 1
         
@@ -150,8 +155,11 @@ class VerticalFragmentation:
     
     def Split(self):
         """ 
-        Split Algorithm - chưa làm
+        Split Algorithm
         """
+        log.info("\n----------------")
+        log.info(f"SPLIT")
+        log.info("----------------")
         
         def usage(use):
             query = []
@@ -181,11 +189,11 @@ class VerticalFragmentation:
                 else:
                     CBQ += self.acc_sum[i]
             
-            print(f"CTQ: {CTQ}, CBQ: {CBQ}, COQ: {COQ}\n result: {CTQ * CBQ - COQ**2}")
+            log.info(f"CTQ: {CTQ}, CBQ: {CBQ}, COQ: {COQ}\n result: {CTQ * CBQ - COQ**2}")
             return CTQ * CBQ - COQ**2
         
         split_columns = self.CA_columns_pos
-        print(f"\n{split_columns}\n")
+        log.info(f"\n{split_columns}\n")
         
         TA_columns_pos = split_columns[:-1] # Create a list with all columns except the last column of the CA matrix
         BA_columns_pos = split_columns[-1:] # Create a list with the last column of the CA matrix
@@ -203,9 +211,9 @@ class VerticalFragmentation:
                     best = [TA_columns_pos]
                 elif z == best_score:
                     best.append(TA_columns_pos)
-            print("----------------\n")
+            log.info("----------------\n")
             split_columns.append(split_columns.pop(0))
-            print(f"{split_columns}\n")
+            log.info(f"{split_columns}\n")
         
         # Assuming the first attribute is the key
         key = list(self.columns_pos.values())[0]
@@ -219,6 +227,14 @@ class VerticalFragmentation:
         self.best = best
         
 if __name__ == "__main__":
+    
+    log.basicConfig(
+        filename='vertical_fragmentation.log',
+        encoding='utf-8',
+        filemode='w',
+        format='%(message)s',
+        level=log.INFO
+    )
     
     """
     acc = np.array([[15, 20, 10],
@@ -239,6 +255,7 @@ if __name__ == "__main__":
     acc = np.array([[10, 20, 0],
                     [0, 20, 10]])
     
+    #Original Attributes
     columns = ['ENO', 'ENAME', 'PNO', 'DUR', 'RESP']
     
     q1_query = "CREATE VIEW EMPVIEW (ENO, ENAME, PNO, RESP) AS SELECT E.ENO, E.ENAME, ASG.PNO, ASG.RESP FROM EMP, ASG WHERE EMP.ENO=ASG.ENO AND DUR=24"
@@ -248,22 +265,23 @@ if __name__ == "__main__":
     # """
     
     proj = VerticalFragmentation(columns, queries, acc)
-    print("----------------\n")
-    print("Original Attributes")
-    print(proj.attributes)
-    print("\n----------------\n")
-    print("USE")
-    print(proj.usage_matrix)
-    print("\n----------------\n")
-    print("AA")
-    print(proj.AA)
-    print("\n----------------\n")
-    print("BAE")
-    result = proj.BEA()
-    print("-------- Result --------")
-    print(proj.CA)
-    print("\n----------------\n")
-    print("Split")
+
+    # USE
+    use = proj.usage_matrix
+    
+    # AA
+    AA = proj.AA
+    
+    # BEA
+    proj.BEA()
+    BEA = proj.CA
+    
+    # Split
     proj.Split()
-    print("-------- Result --------")
-    print(proj.best)
+    split = proj.best
+    
+    print("-------- BEA --------")
+    print(BEA)
+    print("\n-------- Split --------")
+    for frag in split:
+        print(frag)
