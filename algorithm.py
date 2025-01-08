@@ -210,7 +210,7 @@ class VerticalFragmentation:
                     best_score = z
                     best = [TA_columns_pos]
                 elif z == best_score:
-                    best.append(TA_columns_pos)
+                    best.append(TA_columns_pos) # Save all TA of the highest score
             log.info("----------------\n")
             split_columns.append(split_columns.pop(0))
             log.info(f"{split_columns}\n")
@@ -250,6 +250,7 @@ if __name__ == "__main__":
     q4_query = "SELECT SUM(BUDGET) FROM PROJ WHERE LOC = 'VALUE'"
     
     queries = [q1_query, q2_query, q3_query, q4_query]
+    
     """
     
     acc = np.array([[10, 20, 0],
@@ -262,6 +263,7 @@ if __name__ == "__main__":
     q2_query = "SELECT ENO, DUR FROM ASG"
     
     queries = [q1_query, q2_query]
+    
     # """
     
     proj = VerticalFragmentation(columns, queries, acc)
